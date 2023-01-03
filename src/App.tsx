@@ -1,24 +1,42 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useEffect } from 'react';
 import './App.css';
+import Dice from './components/Dice';
+import { turnLongLat } from './utils';
 
-function App() {
+const App = () => {
+
+  const rotateByValue = async (x: number, y: number, id: string) => {
+    const cube = await document.getElementById(`${id}`);
+    if (cube) {
+      cube.style.transform = `rotateX(${x}deg) rotateY(${y}deg)`;
+    }
+  };
+
+  const renegateNewDiceNumber = () => {
+    const newDiceNumber = Math.floor(Math.random() * 6) + 1;
+
+    const { xRand, yRand }: any = turnLongLat(newDiceNumber);
+    rotateByValue(xRand, yRand, 'orand-dice');
+  }
+
+  const handleListenAnimatedEnd = () => {
+    console.log("animated end");
+    setTimeout(() => renegateNewDiceNumber(), 3000)
+  }
+
+  useEffect(() => {
+    renegateNewDiceNumber();
+  }, [])
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App" style={{ position: 'relative' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%'}}>
+        <Dice
+          id='orand-dice'
+          onTransitionEnd={handleListenAnimatedEnd}
+        />
+      </div>
     </div>
   );
 }
